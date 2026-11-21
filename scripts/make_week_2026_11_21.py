@@ -43,4 +43,6 @@ p, q = on_screen('hand_train_11.webp', 'today.png'); c = frame(p, R, centre=q[:,
 words(c, 70, 1262, 'One-minute tour', "Your family's health,\nin one app"); mark(c, y=1590); save(c, 'posts/2026-11-15/cover_tour_photo.jpg')
 p, q = on_screen('hand_home_3.webp', 'lab_result.png'); c = frame(p, R, centre=q[:, 0].mean()); shade(c, bottom=0.94, start=0.42)
 words(c, 70, 1262, 'Lab results', 'A lab sheet,\nin plain words'); mark(c, y=1590); save(c, 'posts/2026-11-17/cover_labs_photo.jpg')
+p, q = on_screen('kitchen_3.webp', 'diary_bp.png'); c = frame(p, R, centre=q[:, 0].mean() + 60); shade(c, top=0.94, start=0.42)
+words(c, 70, 300, 'Health diary', 'Blood pressure,\nas one clear chart'); mark(c, y=1590); save(c, 'posts/2026-11-19/cover_charts_photo.jpg')
 print('ok')
