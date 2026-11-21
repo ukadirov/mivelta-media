@@ -50,8 +50,9 @@ p, q = on_screen('hand_train_11.webp', 'today.png'); c = frame(p, R, centre=q[:,
 words(c, 70, 1262, 'One-minute tour', "Your family's health,\nin one app"); mark(c, y=1590); save(c, 'posts/2026-11-15/cover_tour_photo.jpg')
 p, q = on_screen('hand_home_3.webp', 'lab_result.png'); c = frame(p, R, centre=q[:, 0].mean()); shade(c, bottom=0.94, start=0.42)
 words(c, 70, 1262, 'Lab results', 'A lab sheet,\nin plain words'); mark(c, y=1590); save(c, 'posts/2026-11-17/cover_labs_photo.jpg')
-p, q = on_screen('kitchen_3.webp', 'diary_bp.png'); c = frame(p, R, centre=q[:, 0].mean() + 60); shade(c, top=0.94, start=0.42)
-words(c, 70, 300, 'Health diary', 'Blood pressure,\nas one clear chart'); mark(c, y=1590); save(c, 'posts/2026-11-19/cover_charts_photo.jpg')
+# (first on the kitchen table of kitchen_3; next to the pill box post it was the same table twice)
+p, q = on_screen('bp_phone_3.webp', 'diary_bp.png'); c = frame(p, R, centre=q[:, 0].mean() - 40); shade(c, bottom=0.94, start=0.42)
+words(c, 70, 1262, 'Health diary', 'Blood pressure,\nas one clear chart'); mark(c, y=1590); save(c, 'posts/2026-11-19/cover_charts_photo.jpg')
 
 # 28 Nov: blood pressure at home (replaces bp_521.jpg). The crop leaves the face out.
 p = soften(plain('bp_11.webp'), (1150, 900, 1792, 1560), 8); w, h = p.size; top = int(h * 0.2); cw = int((h - top) * 0.8)
