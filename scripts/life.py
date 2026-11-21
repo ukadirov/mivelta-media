@@ -8,7 +8,14 @@ screenshot from assets/screens there, in perspective, under the photo's
 own light and behind any finger that covers the glass. Posts made this
 way are marked as AI-generated when they are scheduled.
 
-Needs numpy and scipy next to Pillow."""
+Two rules from Umid (2026-11-22), after two covers he sent back:
+  - the screen must sit in the phone as it would in life: true proportions,
+    the phone's own tilt, no green light left on the fingers. Look at every
+    picture at full size before it is shown;
+  - take the app at a moment worth looking at (a question and its answer,
+    a ticked list, a chart, Velta on Today), never an empty or a menu state.
+
+Needs numpy, scipy and opencv-python-headless next to Pillow."""
 import numpy as np
 from scipy import ndimage
 from brand import *
@@ -18,6 +25,30 @@ INK, VIO, GOLD = (22, 27, 68), (104, 84, 214), (255, 205, 120)
 NIGHT = (30, 26, 92)
 
 
+def corners(m):
+    """The four corners of the screen (top-left, top-right, bottom-right,
+    bottom-left) from its green mask. A screen seen at an angle is taken by
+    the extremes along its two diagonals. A screen with a corner under a
+    thumb, or cut by a notch, is taken as the smallest rectangle round what
+    can be seen of it. Whichever of the two covers the visible screen better
+    is used."""
+    import cv2
+    ys, xs = np.nonzero(m)
+    diag = np.array([(xs[i], ys[i]) for i in (np.argmin(xs + ys), np.argmax(xs - ys), np.argmax(xs + ys), np.argmin(xs - ys))], float)
+    c = diag.mean(0); diag = c + (diag - c) * 1.035            # past the rounded corners
+    hull = cv2.convexHull(np.stack([xs, ys], 1).astype(np.int32))
+    box = cv2.boxPoints(cv2.minAreaRect(hull)).astype(float)
+    order = np.argsort(box[:, 1]); top = box[order[:2]]; bot = box[order[2:]]   # upright enough: the two highest are the top
+    top = top[np.argsort(top[:, 0])]; bot = bot[np.argsort(bot[:, 0])]
+    rect = np.array([top[0], top[1], bot[1], bot[0]])
+
+    def cover(q):
+        a = np.zeros(m.shape, np.uint8); cv2.fillPoly(a, [q.astype(np.int32)], 1)
+        h = np.zeros(m.shape, np.uint8); cv2.fillPoly(h, [hull], 1)
+        return (a & h).sum() / max((a | h).sum(), 1)
+    return diag if cover(diag) >= cover(rect) else rect
+
+
 def on_screen(photo, shot, scale=2):
     """The photo (enlarged [scale] times) with [shot] on its green screen,
     and the screen's four corners."""
@@ -25,9 +56,7 @@ def on_screen(photo, shot, scale=2):
     a = np.asarray(p).astype(float); r, g, b = a[..., 0], a[..., 1], a[..., 2]
     green = (g > 110) & (g > r * 1.35) & (g > b * 1.35)
     lab, n = ndimage.label(green); m = lab == 1 + int(np.argmax(ndimage.sum(green, lab, range(1, n + 1))))
-    ys, xs = np.nonzero(m)   # the corners: the extremes along the two diagonals
-    quad = np.array([(xs[i], ys[i]) for i in (np.argmin(xs + ys), np.argmax(xs - ys), np.argmax(xs + ys), np.argmin(xs - ys))], float)
-    c = quad.mean(0); quad = c + (quad - c) * 1.035            # past the rounded corners
+    quad = corners(m)
     s = Image.open(SC + shot).convert('RGB'); w, h = s.size; rows, rhs = [], []
     # The phone in the photo is not as tall as the one the screenshot was taken on: show the top of
     # the screen at its true proportions, never squeezed to fit.
@@ -45,6 +74,10 @@ def on_screen(photo, shot, scale=2):
     lit = Image.fromarray(np.clip(np.asarray(warped).astype(float) * k, 0, 255).astype(np.uint8))
     mask = Image.fromarray((ndimage.binary_dilation(m, iterations=2 * scale) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2 * scale))
     p.paste(lit, (0, 0), mask)
+    near = ndimage.binary_dilation(m, iterations=45 * scale) & ~ndimage.binary_dilation(m, iterations=scale)
+    a = np.asarray(p).astype(float); r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    spill = near & (g > np.maximum(r, b) * 1.04); a[..., 1] = np.where(spill, np.maximum(r, b) * 1.02, g)
+    p = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
     return p, quad
 
 
