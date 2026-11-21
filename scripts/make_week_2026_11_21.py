@@ -40,7 +40,7 @@ words(c, 70, 1010, '150 minutes a week · WHO', '22 minutes a day.\nBetter toget
 # covers for the published reels, 1080x1920; the words sit inside the middle 3:4 that a profile grid shows
 R = (1080, 1920)
 p, q = on_screen('hand_train_11.webp', 'today.png'); c = frame(p, R, centre=q[:, 0].mean()); shade(c, bottom=0.94, start=0.42)
-words(c, 70, 1330, 'One-minute tour', "Your family's health,\nin one app"); mark(c, y=1590); save(c, 'posts/2026-11-15/cover_tour_photo.jpg')
+words(c, 70, 1262, 'One-minute tour', "Your family's health,\nin one app"); mark(c, y=1590); save(c, 'posts/2026-11-15/cover_tour_photo.jpg')
 p, q = on_screen('hand_home_3.webp', 'lab_result.png'); c = frame(p, R, centre=q[:, 0].mean()); shade(c, bottom=0.94, start=0.42)
-words(c, 70, 1330, 'Lab results', 'A lab sheet,\nin plain words'); mark(c, y=1590); save(c, 'posts/2026-11-17/cover_labs_photo.jpg')
+words(c, 70, 1262, 'Lab results', 'A lab sheet,\nin plain words'); mark(c, y=1590); save(c, 'posts/2026-11-17/cover_labs_photo.jpg')
 print('ok')
