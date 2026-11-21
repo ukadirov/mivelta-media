@@ -29,6 +29,14 @@ def on_screen(photo, shot, scale=2):
     quad = np.array([(xs[i], ys[i]) for i in (np.argmin(xs + ys), np.argmax(xs - ys), np.argmax(xs + ys), np.argmin(xs - ys))], float)
     c = quad.mean(0); quad = c + (quad - c) * 1.035            # past the rounded corners
     s = Image.open(SC + shot).convert('RGB'); w, h = s.size; rows, rhs = [], []
+    # The phone in the photo is not as tall as the one the screenshot was taken on: show the top of
+    # the screen at its true proportions, never squeezed to fit.
+    side = lambda i, j: float(np.hypot(*(quad[i] - quad[j])))
+    ratio = (side(0, 1) + side(3, 2)) / (side(0, 3) + side(1, 2))
+    if w / h < ratio:
+        h = int(w / ratio); s = s.crop((0, 0, w, h))
+    else:
+        nw = int(h * ratio); s = s.crop(((w - nw) // 2, 0, (w - nw) // 2 + nw, h)); w = nw
     for (x, y), (u, v) in zip(quad, [(0, 0), (w, 0), (w, h), (0, h)]):
         rows += [[x, y, 1, 0, 0, 0, -u * x, -u * y], [0, 0, 0, x, y, 1, -v * x, -v * y]]; rhs += [u, v]
     warped = s.transform(p.size, Image.PERSPECTIVE, tuple(np.linalg.solve(np.array(rows), np.array(rhs))), Image.BICUBIC)
