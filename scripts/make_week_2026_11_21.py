@@ -26,6 +26,13 @@ for line, col in [('“Did you take', WHITE), ('your pills?”', WHITE), ('shoul
 d.text((80, y + 50), 'Let the list do the asking.\nYou talk about everything else.', font=font('Regular', 42), fill=LAV, spacing=14)
 mark(c); save(c, 'posts/2026-11-26/only_reason.jpg')
 
+# 26 Nov, second choice: not about pills (the week already has four posts on medicines)
+c = Image.new('RGBA', (W, H), NIGHT + (255,)); d = draw(c); star(d, 80, 150, GOLD); y = 290
+for line, col in [('You look after', WHITE), ('everyone.', WHITE), ('Who looks', GOLD), ('after you?', GOLD)]:
+    d.text((80, y), line, font=font('Bold', 104), fill=col); y += 128
+d.text((80, y + 50), 'A question for every caregiver.\nAnswer it kindly.', font=font('Regular', 42), fill=LAV, spacing=14)
+mark(c); save(c, 'posts/2026-11-26/who_looks_after_you.jpg')
+
 # 29 Nov
 c = Image.new('RGBA', (W, H), (238, 233, 255, 255)); d = draw(c); star(d, 80, 130, VIO); y = 240
 for line, col in [('“Call me when', INK), ('you get there.”', VIO)]:
