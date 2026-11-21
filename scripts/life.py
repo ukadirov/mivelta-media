@@ -52,6 +52,14 @@ def plain(photo, scale=2):
     p = Image.open(P + photo).convert('RGB'); return p.resize((p.width * scale, p.height * scale), Image.LANCZOS)
 
 
+def soften(im, box, radius):
+    """Blur one part of a photo (a generated device with made-up lettering on
+    it), with a feathered edge, as if it sat just outside the focus."""
+    soft = im.filter(ImageFilter.GaussianBlur(radius)); m = Image.new('L', im.size, 0)
+    ImageDraw.Draw(m).rounded_rectangle(box, 60, fill=255)
+    im = im.copy(); im.paste(soft, (0, 0), m.filter(ImageFilter.GaussianBlur(radius * 2))); return im
+
+
 def frame(im, size=(W, H), shift=0.5, centre=None):
     """Crop a photo to the post's shape. [shift] 0..1 slides the crop along
     the spare side; [centre] (an x) keeps that point in the middle instead."""

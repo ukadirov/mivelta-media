@@ -52,4 +52,17 @@ p, q = on_screen('hand_home_3.webp', 'lab_result.png'); c = frame(p, R, centre=q
 words(c, 70, 1262, 'Lab results', 'A lab sheet,\nin plain words'); mark(c, y=1590); save(c, 'posts/2026-11-17/cover_labs_photo.jpg')
 p, q = on_screen('kitchen_3.webp', 'diary_bp.png'); c = frame(p, R, centre=q[:, 0].mean() + 60); shade(c, top=0.94, start=0.42)
 words(c, 70, 300, 'Health diary', 'Blood pressure,\nas one clear chart'); mark(c, y=1590); save(c, 'posts/2026-11-19/cover_charts_photo.jpg')
+
+# 28 Nov: blood pressure at home (replaces bp_521.jpg). The crop leaves the face out.
+p = soften(plain('bp_11.webp'), (1150, 900, 1792, 1560), 8); w, h = p.size; top = int(h * 0.2); cw = int((h - top) * 0.8)
+c = frame(p.crop((w - cw - 40, top, w - 40, h))); shade(c, top=0.93, start=0.44)
+words(c, 70, 70, 'At home · source: CDC', 'Blood pressure:\n5 · 2 · 1', sub='5 min rest · 2 readings · 1 min apart'); mark(c); save(c, 'posts/2026-11-28/bp_at_home.jpg')
+
+# 4 Dec: water (replaces water.jpg)
+c = frame(plain('water_11.webp'), shift=1.0); shade(c, top=0.92, start=0.42)
+words(c, 70, 70, 'Source: NHS', '6 to 8 glasses a day.\nTea counts too.'); mark(c); save(c, 'posts/2026-12-04/water_tea.jpg')
+
+# the chat reel's cover (20 Nov)
+p, q = on_screen('sofa_3.webp', 'chat.png'); c = frame(p, R, centre=q[:, 0].mean() + 120); shade(c, bottom=0.94, start=0.42)
+words(c, 70, 1262, 'Symptom chat', 'Ask about\na symptom'); mark(c, y=1590); save(c, 'posts/2026-11-20/cover_chat_photo.jpg')
 print('ok')
